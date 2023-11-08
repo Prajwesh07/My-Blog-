@@ -1,6 +1,7 @@
 
 <?php
 require('includes/db.php');
+include ('includes/function.php');
 if(isset($_GET['page'])){
   $page=$_GET['page'];
 }else{
