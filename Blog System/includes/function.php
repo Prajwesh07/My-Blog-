@@ -1,10 +1,27 @@
 <?php
+// function getPostTitle($db, $id) {
+//     $id = mysqli_real_escape_string($db, $id); // Sanitize the input
+//     $query = "SELECT title FROM posts WHERE id = $id";
+//     $result = mysqli_query($db, $query);
+
+//     if ($result) {
+//         // Check if a row was returned
+//         if ($post = mysqli_fetch_assoc($result)) {
+//             return $post['title'];
+//         }
+//     }
+    
+//     // Handle errors or return a default value if no post is found
+//     return 'Post Not Found';
+// }
+
 function getCategory($db,$id){
     $query="SELECT * FROM category WHERE id=$id";
     $run=mysqli_query($db,$query);
     $data = mysqli_fetch_assoc($run);
     return $data['name'];
 }
+
 function getAllCategory($db){
     $query="SELECT * FROM category" ;
     $run=mysqli_query($db,$query);
@@ -73,6 +90,33 @@ function getMenu($db){
 }
 function getAllSubMenu($db){
     $query="SELECT * FROM submenu";
+    $run=mysqli_query($db,$query);
+    $data = array();
+
+    while($d=mysqli_fetch_assoc($run)){
+        $data[]=$d;
+    }
+    return $data;
+}
+function getAllMenu($db){
+    $query="SELECT * FROM menu";
+    $run=mysqli_query($db,$query);
+    $data = array();
+
+    while($d=mysqli_fetch_assoc($run)){
+        $data[]=$d;
+    }
+    return $data;
+}
+
+function getMenuName($db,$id){
+    $query="SELECT * FROM menu WHERE id=$id";
+    $run=mysqli_query($db,$query);
+    $data = mysqli_fetch_assoc($run);
+    return $data['name'];
+}
+function getAllPost($db){
+    $query="SELECT * FROM posts";
     $run=mysqli_query($db,$query);
     $data = array();
 

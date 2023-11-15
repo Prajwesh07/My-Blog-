@@ -283,14 +283,14 @@ foreach($menus as $menu){
 
 
       </div>
-      <form role="form" method="post" action="../includes/addct.php">
+      <form role="form" method="post" action="../includes/addmenu.php">
     <h4>Add New Menu</h4>
     <br>
 
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label"> Menu Title</label>
         <div class="col-sm-6">
-        <input type="text" class="form-control" name="submenu-name" id="exampleFormControlInput1" placeholder="Enter Sub-Menu Name ...">
+        <input type="text" class="form-control" name="menu-name" id="exampleFormControlInput1" placeholder="Enter Menu Name ...">
         </div>
     </div>
     
@@ -298,11 +298,11 @@ foreach($menus as $menu){
 <div class="mb-3">
     <label for="exampleFormControlInput1" class="form-label"> Menu Link</label>
     <div class="col-sm-6">
-    <input type="text" class="form-control" name="submenu-link" id="exampleFormControlInput1" value="#" placeholder="Enter Sub-Menu Link ...">
+    <input type="text" class="form-control" name="menu-link" id="exampleFormControlInput1" value="#" placeholder="Enter Sub-Menu Link ...">
     </div>
 </div>
 
-    <button type="submit" name="addsubmenu" class="btn btn-primary">Add</button>
+    <button type="submit" name="addmenu" class="btn btn-primary">Add</button>
 </form>
  <br>
 <hr>
@@ -315,7 +315,7 @@ foreach($menus as $menu){
         <tr>
             <th>#</th>
             <th>Sub Menu</th>
-            <th>Parent Menu Id</th>
+            <th>Parent Menu </th>
             <th>Link</th>
             <th>Action</th>
         </tr>
@@ -324,16 +324,16 @@ foreach($menus as $menu){
         <?php
 $submenus = getAllSubMenu($db);
 $count=1;
-foreach($submenus as $menu){
+foreach($submenus as $submenu){
   ?>
 
 <tr>
             <td> <?=$count ?>  </td>
-            <td><?=$menu['name'] ?> </td>
-            <td><?=$menu['parent_menu_id'] ?> </td>
-            <td><?=$menu['action'] ?> </td>
+            <td><?=$submenu['name'] ?> </td>
+            <td><?=getMenuName($db,$submenu['parent_menu_id']) ?> </td>
+            <td><?=$submenu['action']?></td>
             <td>
-                <a class="btn btn-danger" href="../includes/removemenu.php?id=<?=$menu['id'] ?> ">Remove</a>
+                <a class="btn btn-danger" href="../includes/removesubmenu.php?id=<?=$submenu['id'] ?> ">Remove</a>
             </td>
         </tr>
         <!-- Add more rows as needed -->
@@ -348,26 +348,41 @@ foreach($submenus as $menu){
 
 
       </div>
-      <form role="form" method="post" action="../includes/addct.php">
+      <form role="form" method="post" action="../includes/addsubmenu.php">
     <h4>Add New Sub-Menu</h4>
     <br>
 
     <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label"> Menu Title</label>
+        <label for="exampleFormControlInput1" class="form-label"> Sub-Menu Title</label>
         <div class="col-sm-6">
-        <input type="text" class="form-control" name="menu-name" id="exampleFormControlInput1" placeholder="Enter Menu Name ...">
+        <input type="text" class="form-control" name="submenu-name" id="exampleFormControlInput1" placeholder="Enter Sub-Menu Name ...">
         </div>
     </div>
-    
 
-<div class="mb-3">
-    <label for="exampleFormControlInput1" class="form-label"> Menu Link</label>
+    <div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label"> Select Parent Menu</label>
     <div class="col-sm-6">
-    <input type="text" class="form-control" name="menu-link" id="exampleFormControlInput1" value="#" placeholder="Enter Menu Link ...">
+    <select name="parent-id" class="form-control"  id="exampleFormControlInput1" >
+      <?php
+      $mlist = getAllMenu($db);
+      foreach($mlist as $m){
+?>
+<option value="<?=$m['id'] ?>" ><?=$m['name']  ?> </option>
+<?php
+      }
+      ?>
+       
+    </select>
+    </div>
+</div>
+<div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label"> Sub-Menu Link</label>
+    <div class="col-sm-6">
+    <input type="text" class="form-control" name="submenu-link" id="exampleFormControlInput1" value="#" placeholder="Enter Sub-Menu Link ...">
     </div>
 </div>
 
-    <button type="submit" name="addmenu" class="btn btn-primary">Add</button>
+    <button type="submit" name="addsubmenu" class="btn btn-primary">Add</button>
 </form>
 
     </section>

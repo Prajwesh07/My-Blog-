@@ -276,7 +276,7 @@ foreach($categories as $ct){
     <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label"> Category Name</label>
         <div class="col-sm-6">
-        <input type="text" class="form-control" name="category-name" id="exampleFormControlInput1" placeholder="Enter Category Name ...">
+        <input type="text" class="form-control" name="category-name" id="exampleFormControlInput1" placeholder="Enter Category Name ..." required>
         </div>
     </div>
     <button type="submit" name="addct" class="btn btn-primary">Add</button>

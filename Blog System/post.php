@@ -49,6 +49,7 @@ require ('includes/function.php');
     ?>
     <div class="carousel-item <?=$sw?>" data-bs-interval="5000">
     <img src="images/<?=$image['image']?>" class="d-block w-100" alt="...">
+    
     </div>
     <?php
     $c++;

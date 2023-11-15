@@ -23,7 +23,7 @@
       </a>
     </li><!-- End Manage Posts Nav -->
 
-    <li class="nav-item">
+    <li class="nav-item <?php if (basename($_SERVER['PHP_SELF']) == 'manage-comments.php') echo 'active'; ?>">
       <a class="nav-link" href="manage-comments.php">
         <i class="bi bi-chat-left-dots"></i>
         <span>Manage Comments</span>
@@ -44,8 +44,8 @@
       </a>
     </li><!-- End Manage Menu Nav -->
 
-    <li class="nav-item">
-      <a class="nav-link" href="user-profile.php">
+    <li class="nav-item <?php if (basename($_SERVER['PHP_SELF']) == 'profile.php') echo 'active'; ?>">
+      <a class="nav-link" href="profile.php">
         <i class="bi bi-person-square"></i>
         <span>Profile</span>
       </a>

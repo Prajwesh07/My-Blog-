@@ -13,7 +13,7 @@ if(!isset($_SESSION['isUserLoggedIn']) ){
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Manage Posts</title>
+  <title>Edit Post</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -40,6 +40,12 @@ if(!isset($_SESSION['isUserLoggedIn']) ){
     height: 24px; /* Adjust the height to match your button height */
     margin: 0 10px; /* Adjust the margin to control the spacing */
 }
+.preview-image {
+  max-width: 100px;
+  max-height: 100px;
+  margin: 5px;
+}
+
  </style>
 
   <!-- Template Main CSS File -->
@@ -153,7 +159,6 @@ if(!isset($_SESSION['isUserLoggedIn']) ){
             <li class="dropdown-footer">
               <a href="#">Show all notifications</a>
             </li>
-
           </ul><!-- End Notification Dropdown Items -->
 
         </li><!-- End Notification Nav -->
@@ -233,76 +238,150 @@ if(!isset($_SESSION['isUserLoggedIn']) ){
 
   <!-- ======= Sidebar ======= -->
   <?php  include_once('sidebar.php')  ?><!-- End Sidebar-->
-
+  <section>
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Manage Posts</h1>
+      <h1>Edit Post</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Manage Posts</li>
+          <!-- <li class="breadcrumb-item">Users</li> -->
+          <li class="breadcrumb-item active">Edit Posts</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
+   
 
-    <section class="section faq">
-    <table id="example" class="table table-striped table-bordered" style="width:100%">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Post Title</th>
-            <th>Post Content</th>
-            <th>Post Category</th> 
-            <th>Post Date</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-$posts = getAllPost($db);
-$count=1;
-foreach($posts as $post){
-  ?>
+<div class="col-lg-12">
+<?php
+         $post_id=$_GET['id'];
+         $postQuery="SELECT * FROM posts WHERE id=$post_id" ;
+         $runPQ=mysqli_query($db,$postQuery);
+         $post=mysqli_fetch_assoc($runPQ);
+          ?>
+        <div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Edit Post</h5>
 
-<tr>
-            <td> <?=$count ?>  </td>
-            <td><?=$post['title'] ?> </td>
-            <td>
-    <?php
-    $content = $post['content'];
-    $maxLength = 70; // Adjust this value to set the desired character limit
+    <form action="../includes/update_post.php" method="post" enctype="multipart/form-data">
+      <!-- Add an input element -->
+      <div class="mb-3">
+    <label for="postTitle" class="form-label">Post Title</label>
+    
+<input type="text" class="form-control" id="post_title" name="post_title" value="<?= $post['title'] ?>" required>
+      
+</div>
+      <br>
+      <!-- TinyMCE Editor -->
+      
+      <label for="postContent" class="form-label">Post Content</label>
+<textarea class="tinymce-editor" name="post_content" required>
+   <?= $post['content'] ?>
+</textarea><!-- End TinyMCE Editor -->
+<!-- End TinyMCE Editor -->
 
-    if (strlen($content) > $maxLength) {
-        echo substr($content, 0, $maxLength) . '...'; // Truncate content and add ellipsis
-    } else {
-        echo $content; // Display the full content if it's shorter than the limit
-    }
-    ?>
-</td>
+      <!-- Add a submit button -->
+      <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
 
-            <td><?=getCategory($db,$post['category_id'] )?> </td>
-            <td><?=$post['created_at'] ?> </td>
-            <td>
-    <a class="btn btn-success" href="edit-post.php?id=<?=$post['id']?>">Edit</a>
-    <span class="divider"></span>
-    <a class="btn btn-danger" href="../includes/removepost.php?id=<?=$post['id']?>">Delete</a>
-</td>
-
-
-
-        </tr>
-        <!-- Add more rows as needed -->
+      <br>
+    
+      <div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+    <div class="mb-3">
+    <label for="floatingSelect" class="form-label">Edit Categories</label>
+        <select class="form-select" id="floatingSelect" name="post_category" aria-label="Floating label select example" required>
   <?php
-  $count++;
-}
+    $categories = getAllCategory($db);
+    foreach ($categories as $ct) {
+      $selected = ($ct['id'] == $post['category_id']) ? 'selected' : '';
+  ?>
+    <option value="<?= $ct['id'] ?>" <?= $selected ?>><?= $ct['name'] ?></option>
+  <?php
+    }
+  ?>
+</select>
+
+        
+      </div>
+    </div>
+    <div class="col-sm-12">
+  <?php 
+  $post_images = getImagesByPost($db, $post['id']);
+
+  if (!empty($post_images)) {
+    ?>
+    <table id="example" class="table table-striped table-bordered" style="width:100%">
+      <thead>
+        <tr>
+          <th>Preview</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="imageTableBody">
+        <?php
+        foreach ($post_images as $image) {
+          ?>
+          <tr>
+            <td><img src="../images/<?=$image['image'] ?>" alt="Image Preview" style="max-width: 200px; max-height: 200px;"></td>
+            <td>
+            <a class="btn btn-danger" href="../includes/removeimg.php?=$post['id']?>">Delete</a>
+         </td>
+          </tr>
+          <?php
+        }
         ?>
         
-    </tbody>
-</table>
-    </section>
+      </tbody>
+    </table>
+    <input type="file" class="form-control" name="post_image[]" id="imageUpload" accept="image/*" multiple >
+    <?php
+  } else {
+    ?>
+     <input type="file" class="form-control" name="post_image[]" id="imageUpload" accept="image/*" multiple required>
+    <?php
+  }
+  ?>
+</div>
+
+
+
+<!-- 
+    <div class="col-sm-12">
+  <div class="mb-3">
+    <label for="imageUpload" class="form-label">Upload Photos (Max 5)</label>
+    
+    <input type="file" class="form-control" name="post_image[]" id="imageUpload" value="" accept="image/*" multiple required>
+  </div>
+  <div id="imagePreview"></div>
+</div> -->
+
+  </div>
+</div>
+
+<br>
+<center>
+<div class="row mb-3 justify-content-center">
+  <div class="col-sm-10">
+    <button type="submit" name="editpost" class="btn btn-primary" value="Edit Post"  >Update</button>
+  </div>
+</div>
+</center>
+
+     
+    </form>
+  </div>
+</div>
+
+
+</div>
+ 
+    
 
   </main><!-- End #main -->
+  </section>
+
 
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
@@ -329,7 +408,30 @@ foreach($posts as $post){
   <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
+ <!-- <script> 
+document.getElementById('imageUpload').addEventListener('change', function (event) {
+  const imagePreview = document.getElementById('imagePreview');
+  imagePreview.innerHTML = ''; // Clear the previous preview
 
+  for (let i = 0; i < event.target.files.length; i++) {
+    const file = event.target.files[i];
+
+    if (file.type.match('image.*')) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const image = document.createElement('img');
+        image.src = e.target.result;
+        image.classList.add('preview-image');
+
+        imagePreview.appendChild(image);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+});
+</script> -->
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
 

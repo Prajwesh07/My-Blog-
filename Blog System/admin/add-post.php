@@ -24,7 +24,7 @@ if(!isset($_SESSION['isUserLoggedIn']) ){
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
+     
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -33,10 +33,17 @@ if(!isset($_SESSION['isUserLoggedIn']) ){
   <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
+  
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
+  <style> 
+  .preview-image {
+  max-width: 100px;
+  max-height: 100px;
+  margin: 5px;
+}
 
+  </style>
   <!-- =======================================================
   * Template Name: NiceAdmin
   * Updated: Sep 18 2023 with Bootstrap v5.3.2
@@ -282,11 +289,13 @@ if(!isset($_SESSION['isUserLoggedIn']) ){
     </div>
 
     <div class="col-sm-6">
-      <div class="mb-3">
-        <label for="imageUpload" class="form-label">Upload Photos (Max 5)</label>
-        <input type="file" class="form-control" name="post_image[]" id="imageUpload" accept="image/*" multiple required>
-      </div>
-    </div>
+  <div class="mb-3">
+    <label for="imageUpload" class="form-label">Upload Photos (Max 5)</label>
+    <input type="file" class="form-control" name="post_image[]" id="imageUpload" accept="image/*" multiple required>
+  </div>
+  <div id="imagePreview"></div>
+</div>
+
   </div>
 </div>
 
@@ -336,7 +345,30 @@ if(!isset($_SESSION['isUserLoggedIn']) ){
   <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script>
+  document.getElementById('imageUpload').addEventListener('change', function (event) {
+  const imagePreview = document.getElementById('imagePreview');
+  imagePreview.innerHTML = ''; // Clear the previous preview
 
+  for (let i = 0; i < event.target.files.length; i++) {
+    const file = event.target.files[i];
+
+    if (file.type.match('image.*')) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const image = document.createElement('img');
+        image.src = e.target.result;
+        image.classList.add('preview-image');
+
+        imagePreview.appendChild(image);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  }
+});
+ </script>
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
 
